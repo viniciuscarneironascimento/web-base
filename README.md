@@ -1,0 +1,1 @@
+Repositório de estudo curso QA Ninja conceitos básicos de HTML, CSS e JS.

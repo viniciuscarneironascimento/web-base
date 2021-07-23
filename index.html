@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>WebBase from QA Ninja</title>
+    <!--Aqui informamos que o VUE.JS será usado nesta página HTML-->
+    <script src="js/vue.js"></script>
+</head>
+
+<body>
+    <!--Aqui no corpo do código devemos incluir uma DIV principal para o framework VUE.JS e todo o código do HTML tem que ficar debaixo desta DIV-->
+    <!--Após o fechamento desta DIV, abrir nova tag  script para vincular a página HTML ao código VUE.JS-->
+    <div id="app">
+        <h1>Cadastro de Alunos</h1>
+
+        <form>
+            <label class="label" for="nomeCompleto">Nome Completo</label>
+            <!--Inserir "v-model="form.nome" para apresentar os valores dentro da span em tempo real, a medida que vou digitando nos campos, ou seja, o campo tem um víunculo com um objeto no javaScript. O "v-model" é um recurso do VUE-->
+            <input name="nomeCompleto" type="text" v-model="form.nome">
+            <label for="email">E-mail</label>
+            <input name="email" type="text" v-model="form.email">
+            <label for="nota">Nota</label>
+            <input name="nota" type="text" v-model="form.nota">
+            <!--Inserir recurso do VUE "@click" para fazer chamada do método criado para adcicionar um contato "@click="adicionarAluno". O método deve ser criado na camada de SCRIPTS-->
+            <input type="button" value="Cadastrar" @click="adicionarAluno"></input>
+        </form>
+
+        <!--Cria este span para exibir os dados digitados dinamicamente. Mas antes será necessário ciar o "v-model" assim como foi feito com o "v-for". O "v-model" deverá ser inserido ao lado do campo que queremos que seja reproduzido dinamicamente, ou seja, ao lado dos campos input-->
+        <span>
+            {{form.nome}} - {{form.email}}- {{form.nota}}
+        </span>
+        <div>
+            <!--É necessário criar a "class" para ser rastreável no CSS-->
+            <table class="table">
+                <thead>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>Nota</th>
+                    <th>Ações</th>
+                    <!--A tag "tbody" significa corpo de uma tabela-->
+                <tbody>
+                    <!--Vou comentar esta forma simplificada de apresentar dados em uma tabela para criar uma tabela dinâmica pelo VUE.JS
+                    <tr>
+                        <td>Vinicius Carneiro</td>
+                        <td>contato.vinicius@gmail.com</td>
+                        <td>10.00</td>
+                    </tr>
+                    <tr>
+                        <td>Fernando Papito</td>
+                        <td>papito@gmail.com</td>
+                        <td>10.00</td>
+                    </tr>-->
+                    <!--Usar diretiva do VUE chamado "v-for" que serve para renderizar uma lista de elementos com base nos dados de um array-->
+                    <tr v-for="aluno in alunos">
+                        <!--Depois desta linha vou no script da instãncia VUE no final da página para adicionar objeto "data" para trabalhar com dadas e criar um arrya de alunos-->
+                        <td>{{aluno.nome}}</td>
+                        <td>{{aluno.email}}</td>
+                        <td>{{aluno.nota}}</td>
+                        <td>
+                            <button class="danger" @click="apagarAluno(aluno)">Ações</button>
+                        </td>
+                    </tr>
+
+
+                </tbody>
+                </thead>
+            </table>
+        </div>
+
+    </div>
+    <!--Após o fechamento desta DIV principal "app" iremos criar tag "script" para vincular a página HTML ao código VUE.JS-->
+    <!--Desta forma temos a integração do VUE.JS com nossa página HTML-->
+    <script>
+        var app = new Vue({
+            el: "#app",
+            //Depois da tag 'tbody' "<tr v-for="alono in alunos">" vou criar aqui o objeto "data" para trabalhar com dados//
+            data: {
+                //Criando um array 'alunos[]'
+                alunos: [],
+                //As linhas comentadas abaixo foram criads para mostrar um formulário pré-preenchido. Agora mantivemos apenas o array "alunos: []" que será utilizado vazio para fazermos um cadastro na hora
+                // [
+                //     { nome: 'Vinicius Carneiro', email: 'contato.vinicius@gmail.com', nota: 10 },
+                //     { nome: 'Fernando Papito', email: 'papito@gmail.com', nota: 10 },
+                //     { nome: 'Daniel Bispo', email: 'dbbispo@gmail.com', nota: 9 }
+                // ],
+
+                //Aqui na camada javascrip criarei um elemento do VUE, o 'FORM', dentro do 'DATA'. Este objeto irá reproduzir os mesmo elementos digitados na tela//
+                form: {
+                    nome: '',
+                    email: '',
+                    nota: ''
+                },
+            },
+            methods: {
+                limpaFormulario: function () {
+                    this.form = {
+                        nome: '',
+                        email: '',
+                        nota: ''
+                    }
+                },
+                adicionarAluno: function () {
+                    //console.log(this.form)  //esta linha comentada foi usada pela primeira vez para validar a interação com a página vista pelo console F12 do browser
+
+                    this.alunos.push(this.form)
+                    this.limpaFormulario()
+                },
+                apagarAluno(aluno) {
+                    //console.log(aluno)
+                    //Obter a posição exata deste aluno que quero deletar "INDEXOF"
+                    var posicao = this.alunos.indexOf(aluno)
+                    //console.log(i)
+                    //Usar "splice" para excluir a linha
+                    this.alunos.splice(posicao, 1)
+                }
+            }
+        })
+    </script>
+    <!--Aqui iremos criar os códigos CSS para melhorar a aparência da tela através da tag 'STYLE'
+    Para isto, será necessário definir uma tag lá em cima na tabela, ou seja, "class="table"-->
+    <!--Outras opções são ".table th" para configurar apenas uma "th" do elemento tabela. Podemos ser genéricos e alterar TODOD os elementos de um determinado TIPO, como INPUT-->
+    <style>
+        .table {
+            margin-top: 20px;
+            width: 100%;
+            text-align: left;
+        }
+
+        .table th,
+        .table td {
+            border-top: 1px solid #ccc;
+        }
+
+        input {
+            display: block;
+        }
+
+        .label {
+            color: blue;
+        }
+
+        input[type=button] {
+            margin-top: 10px;
+            background-color: chartreuse;
+        }
+
+        .danger {
+            background-color: crimson;
+        }
+    </style>
+</body>
+
+</html>
